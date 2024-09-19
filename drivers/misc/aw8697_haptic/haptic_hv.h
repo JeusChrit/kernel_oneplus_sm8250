@@ -500,21 +500,24 @@ enum aw_haptic_motor_old_test_mode {
  *********************************************************/
 #define aw_pr_err(format, ...) \
 	pr_err(format, ##__VA_ARGS__)
-
 #define aw_pr_info(format, ...) \
 	pr_info(format, ##__VA_ARGS__)
-
 #define aw_pr_debug(format, ...) \
 	pr_debug(format, ##__VA_ARGS__)
-
 #define aw_dev_err(format, ...) \
 	pr_err("[haptic_hv]" format, ##__VA_ARGS__)
-
 #define aw_dev_info(format, ...) \
 	pr_info("[haptic_hv]" format, ##__VA_ARGS__)
-
 #define aw_dev_dbg(format, ...) \
 	pr_debug("[haptic_hv]" format, ##__VA_ARGS__)
+#else
+#define aw_pr_err(format, ...)
+#define aw_pr_info(format, ...)
+#define aw_pr_debug(format, ...)
+#define aw_dev_err(dev, format, ...)
+#define aw_dev_info(dev, format, ...)
+#define aw_dev_dbg(dev, format, ...)
+#endif
 
 /*********************************************************
  *
