@@ -112,10 +112,10 @@ static int oplus_haptic_event_payload_pack(struct haptic_fb_detail *fb_info)
 
 	memset(chip->dcs_info, 0x0, OPLUS_HSPTIC_TRIGGER_MSG_LEN);
 	snprintf(chip->dcs_info->payload, MAX_PAYLOAD_LEN,
-			 "NULL$$EventField@@%s$$FieldData@@%s$$detailData@@%s",
-		  fb_event_field,
-		  fb_event_desc,
-		  fb_info->detailData);
+		 "NULL$$EventField@@%s$$FieldData@@%s$$detailData@@%s",
+		 fb_event_field,
+		 fb_event_desc,
+		 fb_info->detailData);
 	chip->dcs_info->payload[MAX_PAYLOAD_LEN - 1] = '\0';
 	len = strlen(chip->dcs_info->payload);
 
@@ -264,8 +264,8 @@ static void oplus_haptic_track_dev_err_load_trigger_work(struct work_struct *wor
 	struct oplus_haptic_track *chip = g_haptic_track_chip;
 	struct delayed_work *dwork = to_delayed_work(work);
 	struct haptic_dev_track_event *dev_event =
-	container_of(dwork, struct haptic_dev_track_event,
-				 track_dev_err_load_trigger_work);
+		container_of(dwork, struct haptic_dev_track_event,
+		track_dev_err_load_trigger_work);
 	struct haptic_fb_detail *fb_detail;
 
 	if ((!chip) || (!dev_event)) {
@@ -281,8 +281,8 @@ static void oplus_haptic_track_dev_err_load_trigger_work(struct work_struct *wor
 	fb_detail->track_type = dev_event->dev_event_que[que_front].track_type;
 	memset(fb_detail->detailData, 0, MAX_DETAIL_INFO_LEN);
 	snprintf(fb_detail->detailData, MAX_DETAIL_INFO_LEN,
-			 "reg_addr:0x%x,err_code:%u", dev_event->dev_event_que[que_front].reg_addr,
-		  dev_event->dev_event_que[que_front].err_code);
+		"reg_addr:0x%x,err_code:%u", dev_event->dev_event_que[que_front].reg_addr,
+		dev_event->dev_event_que[que_front].err_code);
 
 	dev_event->que_front++;
 	oplus_haptic_track_upload_trigger_data(fb_detail);
@@ -293,8 +293,8 @@ static void oplus_haptic_track_fre_cail_load_trigger_work(struct work_struct *wo
 	struct oplus_haptic_track *chip = g_haptic_track_chip;
 	struct delayed_work *dwork = to_delayed_work(work);
 	struct haptic_fre_cail_track_event *cail_event =
-	container_of(dwork, struct haptic_fre_cail_track_event,
-				 track_fre_cail_load_trigger_work);
+		container_of(dwork, struct haptic_fre_cail_track_event,
+		track_fre_cail_load_trigger_work);
 	struct haptic_fb_detail *fb_detail;
 
 	if ((!chip) || (!cail_event)) {
@@ -306,8 +306,8 @@ static void oplus_haptic_track_fre_cail_load_trigger_work(struct work_struct *wo
 	fb_detail->track_type = cail_event->fre_event.track_type;
 	memset(fb_detail->detailData, 0, MAX_DETAIL_INFO_LEN);
 	snprintf(fb_detail->detailData, MAX_DETAIL_INFO_LEN,
-			 "cali_data:%u,cali_ret:0x%x,fail_info:%s", cail_event->fre_event.cali_data,
-		  cail_event->fre_event.result_flag, cail_event->fre_event.fail_info);
+		"cali_data:%u,cali_ret:0x%x,fail_info:%s", cail_event->fre_event.cali_data,
+		cail_event->fre_event.result_flag, cail_event->fre_event.fail_info);
 
 	oplus_haptic_track_upload_trigger_data(fb_detail);
 }
@@ -318,8 +318,8 @@ static void oplus_haptic_track_mem_alloc_load_trigger_work(struct work_struct *w
 	struct oplus_haptic_track *chip = g_haptic_track_chip;
 	struct delayed_work *dwork = to_delayed_work(work);
 	struct haptic_mem_alloc_track_event *mem_event =
-	container_of(dwork, struct haptic_mem_alloc_track_event,
-				 track_mem_alloc_err_load_trigger_work);
+		container_of(dwork, struct haptic_mem_alloc_track_event,
+		track_mem_alloc_err_load_trigger_work);
 	struct haptic_fb_detail *fb_detail;
 
 	if ((!chip) || (!mem_event)) {
@@ -335,8 +335,8 @@ static void oplus_haptic_track_mem_alloc_load_trigger_work(struct work_struct *w
 	fb_detail->track_type = mem_event->mem_event_que[que_front].track_type;
 	memset(fb_detail->detailData, 0, MAX_DETAIL_INFO_LEN);
 	snprintf(fb_detail->detailData, MAX_DETAIL_INFO_LEN,
-			 "alloc_len:0x%x,fun_name:%s", mem_event->mem_event_que[que_front].alloc_len,
-		  mem_event->mem_event_que[que_front].fun_name);
+			"alloc_len:0x%x,fun_name:%s", mem_event->mem_event_que[que_front].alloc_len,
+			mem_event->mem_event_que[que_front].fun_name);
 
 	(mem_event->que_front)++;
 	oplus_haptic_track_upload_trigger_data(fb_detail);
@@ -347,19 +347,19 @@ static void oplus_haptic_track_upload_info_dwork(struct work_struct *work)
 	int ret = 0;
 	struct delayed_work *dwork = to_delayed_work(work);
 	struct oplus_haptic_track *chip =
-	container_of(dwork, struct oplus_haptic_track, upload_info_dwork);
+		container_of(dwork, struct oplus_haptic_track, upload_info_dwork);
 
 	if ((!chip) || (!chip->dcs_info))
 		return;
 
-	#if defined(CONFIG_OPLUS_FEATURE_FEEDBACK) || defined(CONFIG_OPLUS_FEATURE_FEEDBACK_MODULE)
+#if defined(CONFIG_OPLUS_FEATURE_FEEDBACK) || defined(CONFIG_OPLUS_FEATURE_FEEDBACK_MODULE)
 	ret = fb_kevent_send_to_user(chip->dcs_info);
-	#endif
+#endif
 	if (!ret) {
 		complete(&chip->trigger_ack);
 	} else if (chip->fb_retry_cnt > 0) {
 		queue_delayed_work(chip->trigger_upload_wq, &chip->upload_info_dwork,
-						   msecs_to_jiffies(OPLUS_HAPTIC_UPDATE_INFO_DELAY_MS));
+				   msecs_to_jiffies(OPLUS_HAPTIC_UPDATE_INFO_DELAY_MS));
 	}
 
 	haptic_fb_info("retry_cnt: %d, ret = %d\n", chip->fb_retry_cnt, ret);
@@ -378,7 +378,7 @@ static int oplus_haptic_track_thread(void *data)
 	while (!kthread_should_stop()) {
 		mutex_lock(&chip->upload_lock);
 		rc = wait_event_interruptible(chip->upload_wq,
-									  chip->trigger_data_ok);
+					      chip->trigger_data_ok);
 		mutex_unlock(&chip->upload_lock);
 		if (rc)
 			return rc;
@@ -389,7 +389,7 @@ static int oplus_haptic_track_thread(void *data)
 		chip->fb_retry_cnt = OPLUS_HAPTIC_FB_RETRY_TIME;
 
 		queue_delayed_work(chip->trigger_upload_wq,
-						   &chip->upload_info_dwork, 0);
+				   &chip->upload_info_dwork, 0);
 
 		mutex_unlock(&chip->trigger_data_lock);
 	}
@@ -418,19 +418,19 @@ static void oplus_haptic_track_init(struct oplus_haptic_track *track_dev)
 	/* event track init */
 	dev_event = &(track_dev->dev_track_event);
 	INIT_DELAYED_WORK(&dev_event->track_dev_err_load_trigger_work,
-					  oplus_haptic_track_dev_err_load_trigger_work);
+			  oplus_haptic_track_dev_err_load_trigger_work);
 	dev_event->que_front = 0;
 	dev_event->que_rear = 0;
 
 	/* fre cali track init */
 	fre_cail_event = &(track_dev->fre_cail_track_event);
 	INIT_DELAYED_WORK(&fre_cail_event->track_fre_cail_load_trigger_work,
-					  oplus_haptic_track_fre_cail_load_trigger_work);
+	    oplus_haptic_track_fre_cail_load_trigger_work);
 
 	/* mem alloc track init */
 	mem_alloc_event = &(track_dev->mem_alloc_track_event);
 	INIT_DELAYED_WORK(&mem_alloc_event->track_mem_alloc_err_load_trigger_work,
-					  oplus_haptic_track_mem_alloc_load_trigger_work);
+			  oplus_haptic_track_mem_alloc_load_trigger_work);
 	mem_alloc_event->que_front = 0;
 	mem_alloc_event->que_rear = 0;
 }
@@ -446,7 +446,7 @@ static ssize_t dev_event_track_show(struct device *dev, struct device_attribute 
 }
 
 static ssize_t dev_event_track_store(struct device *dev, struct device_attribute *attr,
-									 const char *buf, size_t len)
+				     const char *buf, size_t len)
 {
 	uint8_t track_type = 0;
 	uint8_t reg_addr = 0;
@@ -468,11 +468,11 @@ static ssize_t dev_event_track_store(struct device *dev, struct device_attribute
 static ssize_t dev_fre_cail_track_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
 	return oplus_haptic_track_fre_cail(fre_cail_node.track_type, fre_cail_node.cali_data,
-									   fre_cail_node.result_flag, fre_cail_node.fail_info);
+					   fre_cail_node.result_flag, fre_cail_node.fail_info);
 }
 
 static ssize_t dev_fre_cail_track_store(struct device *dev, struct device_attribute *attr,
-										const char *buf, size_t len)
+					const char *buf, size_t len)
 {
 	uint8_t track_type = 0;
 	uint32_t cali_data = 0;
@@ -501,7 +501,7 @@ static ssize_t dev_mem_alloc_track_show(struct device *dev, struct device_attrib
 }
 
 static ssize_t dev_mem_alloc_track_store(struct device *dev, struct device_attribute *attr,
-										 const char *buf, size_t len)
+					 const char *buf, size_t len)
 {
 	uint8_t track_type = 0;
 	uint32_t alloc_len = 0;
@@ -519,11 +519,11 @@ static ssize_t dev_mem_alloc_track_store(struct device *dev, struct device_attri
 }
 
 static DEVICE_ATTR(event_track, 0664, dev_event_track_show,
-				   dev_event_track_store);
+		   dev_event_track_store);
 static DEVICE_ATTR(fre_cali_track, 0664, dev_fre_cail_track_show,
-				   dev_fre_cail_track_store);
+		   dev_fre_cail_track_store);
 static DEVICE_ATTR(mem_alloc_track, 0664, dev_mem_alloc_track_show,
-				   dev_mem_alloc_track_store);
+		   dev_mem_alloc_track_store);
 
 static struct attribute *haptic_fb_attributes[] = {
 	&dev_attr_event_track.attr,
@@ -567,7 +567,7 @@ static int oplus_haptic_feedback_probe(struct platform_device *pdev)
 	}
 
 	hapric_track->dcs_info = (struct kernel_packet_info *)devm_kzalloc(&pdev->dev,
-																	   sizeof(char) * OPLUS_HSPTIC_TRIGGER_MSG_LEN, GFP_KERNEL);
+		sizeof(char) * OPLUS_HSPTIC_TRIGGER_MSG_LEN, GFP_KERNEL);
 	if (!hapric_track->dcs_info) {
 		ret = -ENOMEM;
 		goto dcs_info_kmalloc_fail;
@@ -580,7 +580,7 @@ static int oplus_haptic_feedback_probe(struct platform_device *pdev)
 
 	/* creat feedback monitor thread */
 	hapric_track->track_upload_kthread = kthread_run(oplus_haptic_track_thread, (void *)hapric_track,
-													 "track_upload_kthread");
+							"track_upload_kthread");
 	if (IS_ERR(hapric_track->track_upload_kthread)) {
 		pr_err("failed to create oplus_haptic_track_thread\n");
 		ret = -EINVAL;
@@ -588,16 +588,16 @@ static int oplus_haptic_feedback_probe(struct platform_device *pdev)
 	}
 
 	INIT_DELAYED_WORK(&hapric_track->upload_info_dwork,
-					  oplus_haptic_track_upload_info_dwork);
+			  oplus_haptic_track_upload_info_dwork);
 
 	hapric_track->trigger_upload_wq = create_workqueue("haptic_chg_trigger_upload_wq");
 	g_haptic_track_chip = hapric_track;
 	pr_info("probe done\n");
 
 	return 0;
-	track_kthread_init_err:
+track_kthread_init_err:
 	devm_kfree(&pdev->dev, hapric_track->dcs_info);
-	dcs_info_kmalloc_fail:
+dcs_info_kmalloc_fail:
 	devm_kfree(&pdev->dev, hapric_track);
 	return ret;
 }

@@ -515,9 +515,9 @@ enum aw_haptic_motor_old_test_mode {
 #define aw_pr_err(format, ...)
 #define aw_pr_info(format, ...)
 #define aw_pr_debug(format, ...)
-#define aw_dev_err(dev, format, ...)
-#define aw_dev_info(dev, format, ...)
-#define aw_dev_dbg(dev, format, ...)
+#define aw_dev_err(format, ...)
+#define aw_dev_info(format, ...)
+#define aw_dev_dbg(format, ...)
 #endif
 
 /*********************************************************
