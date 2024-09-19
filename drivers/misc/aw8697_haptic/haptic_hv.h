@@ -498,6 +498,7 @@ enum aw_haptic_motor_old_test_mode {
  * Log Format
  *
  *********************************************************/
+#if 0
 #define aw_pr_err(format, ...) \
 	pr_err(format, ##__VA_ARGS__)
 #define aw_pr_info(format, ...) \
