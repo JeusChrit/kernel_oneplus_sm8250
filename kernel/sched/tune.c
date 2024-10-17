@@ -735,6 +735,7 @@ static struct cftype files[] = {
 		.name = "prefer_idle",
 		.read_u64 = prefer_idle_read,
 	{ }	/* terminate */
+	}
 };
 
 static void

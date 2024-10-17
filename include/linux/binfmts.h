@@ -16,38 +16,38 @@ struct filename;
  */
 struct linux_binprm {
 	char buf[BINPRM_BUF_SIZE];
-#ifdef CONFIG_MMU
+	#ifdef CONFIG_MMU
 	struct vm_area_struct *vma;
 	unsigned long vma_pages;
-#else
-# define MAX_ARG_PAGES	32
+	#else
+	# define MAX_ARG_PAGES	32
 	struct page *page[MAX_ARG_PAGES];
-#endif
+	#endif
 	struct mm_struct *mm;
 	unsigned long p; /* current top of mem */
 	unsigned int
-		/*
-		 * True after the bprm_set_creds hook has been called once
-		 * (multiple calls can be made via prepare_binprm() for
-		 * binfmt_script/misc).
-		 */
-		called_set_creds:1,
-		/*
-		 * True if most recent call to the commoncaps bprm_set_creds
-		 * hook (due to multiple prepare_binprm() calls from the
-		 * binfmt_script/misc handlers) resulted in elevated
-		 * privileges.
-		 */
-		cap_elevated:1,
-		/*
-		 * Set by bprm_set_creds hook to indicate a privilege-gaining
-		 * exec has happened. Used to sanitize execution environment
-		 * and to set AT_SECURE auxv for glibc.
-		 */
-		secureexec:1;
-#ifdef __alpha__
+	/*
+	 * True after the bprm_set_creds hook has been called once
+	 * (multiple calls can be made via prepare_binprm() for
+	 * binfmt_script/misc).
+	 */
+	called_set_creds:1,
+	/*
+	 * True if most recent call to the commoncaps bprm_set_creds
+	 * hook (due to multiple prepare_binprm() calls from the
+	 * binfmt_script/misc handlers) resulted in elevated
+	 * privileges.
+	 */
+	cap_elevated:1,
+	/*
+	 * Set by bprm_set_creds hook to indicate a privilege-gaining
+	 * exec has happened. Used to sanitize execution environment
+	 * and to set AT_SECURE auxv for glibc.
+	 */
+	secureexec:1;
+	#ifdef __alpha__
 	unsigned int taso:1;
-#endif
+	#endif
 	unsigned int recursion_depth; /* only for search_binary_handler() */
 	struct file * file;
 	struct cred *cred;	/* new credentials */
@@ -56,8 +56,8 @@ struct linux_binprm {
 	int argc, envc;
 	const char * filename;	/* Name of binary as seen by procps */
 	const char * interp;	/* Name of the binary really executed. Most
-				   of the time same as filename, but could be
-				   different for binfmt_{misc,script} */
+	of the time same as filename, but could be
+	different for binfmt_{misc,script} */
 	unsigned interp_flags;
 	unsigned interp_data;
 	unsigned long loader, exec;
@@ -131,25 +131,47 @@ extern int suid_dumpable;
 #define EXSTACK_ENABLE_X  2	/* Enable executable stacks */
 
 extern int setup_arg_pages(struct linux_binprm * bprm,
-			   unsigned long stack_top,
-			   int executable_stack);
+						   unsigned long stack_top,
+						   int executable_stack);
 extern int transfer_args_to_stack(struct linux_binprm *bprm,
-				  unsigned long *sp_location);
+								  unsigned long *sp_location);
 extern int bprm_change_interp(const char *interp, struct linux_binprm *bprm);
 extern int copy_strings_kernel(int argc, const char *const *argv,
-			       struct linux_binprm *bprm);
+							   struct linux_binprm *bprm);
 extern int prepare_bprm_creds(struct linux_binprm *bprm);
 extern void install_exec_creds(struct linux_binprm *bprm);
 extern void set_binfmt(struct linux_binfmt *new);
 extern ssize_t read_code(struct file *, unsigned long, loff_t, size_t);
+extern bool is_zygote_pid(pid_t pid);
 
 extern int do_execve(struct filename *,
-		     const char __user * const __user *,
-		     const char __user * const __user *);
+					 const char __user * const __user *,
+					 const char __user * const __user *);
 extern int do_execveat(int, struct filename *,
-		       const char __user * const __user *,
-		       const char __user * const __user *,
-		       int);
+					   const char __user * const __user *,
+					   const char __user * const __user *,
+					   int);
 int do_execve_file(struct file *file, void *__argv, void *__envp);
+
+static inline bool task_is_booster(struct task_struct *tsk)
+{
+	char comm[sizeof(tsk->comm)];
+
+	get_task_comm(comm, tsk);
+	return !strcmp(comm, "init") ||
+	!strcmp(comm, "NodeLooperThrea") ||
+	!strcmp(comm, "power@1.0-servic") ||
+	!strcmp(comm, "power@1.1-servic") ||
+	!strcmp(comm, "power@1.2-servic") ||
+	!strcmp(comm, "power-servic") ||
+	!strcmp(comm, "perf@1.0-servic") ||
+	!strcmp(comm, "perf@2.0-servic") ||
+	!strcmp(comm, "perf@1.1-servic") ||
+	!strcmp(comm, "perf@1.2-servic") ||
+	!strcmp(comm, "perf@2.1-servic") ||
+	!strcmp(comm, "perf@2.2-servic") ||
+	!strcmp(comm, "iop@") ||
+	!strcmp(comm, "init.qcom.post_");
+}
 
 #endif /* _LINUX_BINFMTS_H */
