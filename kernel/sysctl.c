@@ -3160,7 +3160,7 @@ static int proc_dostring_coredump(struct ctl_table *table, int write,
 	return error;
 }
 #endif
-
+static int max_kswapd_threads = MAX_KSWAPD_THREADS;
 #ifdef CONFIG_SCHED_WALT
 static int proc_douintvec_minmax_schedhyst(struct ctl_table *table, int write,
 		void __user *buffer, size_t *lenp, loff_t *ppos)
