@@ -53,7 +53,7 @@ make O=out -j$(nproc --all) \
 COMMIT_NAME=$(git show -s --format=%s)
 COMMIT_HASH=$(git rev-parse --short HEAD)
 
-mv out/arch/arm64/boot/Image /$HOME/Desktop/AnyKernel3/zImage
+mv out/arch/arm64/boot/Image /run/media/jeusc/Kingston120/Desktop/AnyKernel3
 
 rm -r out
 
